@@ -5,9 +5,9 @@ const Item = require('../models/Item');
 
 
 router.post('/', async (req, res) => {
-    const { name, description } = req.body;
+    const { name, description, username } = req.body;
     try {
-        const newItem = new Item({ name, description });
+        const newItem = new Item({ name, description, username });
         await newItem.save();
         res.status(201).json(newItem);
     } catch (error) {

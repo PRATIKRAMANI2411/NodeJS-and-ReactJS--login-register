@@ -1,6 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Navigate } from "react-router-dom";
+import Table from 'react-bootstrap/Table';
+
 
 const Dashboard = () => {
   const [items, setItems] = useState([]);
@@ -8,8 +10,8 @@ const Dashboard = () => {
   const [description, setDescription] = useState('');
 
   const storedToken = localStorage.getItem("token");
-  const data = JSON.parse(storedToken);
-  console.log('getToken: ', data.token);
+  const datauser = JSON.parse(storedToken);
+  console.log('getToken: ', datauser.token);
 
 
   useEffect(() => {
@@ -26,8 +28,10 @@ const Dashboard = () => {
   }, []);
 
   const addItem = async () => {
+    const username = datauser.username
+    console.log(name, description, username);
     try {
-      const response = await axios.post('http://localhost:3001/api/items', { name, description });
+      const response = await axios.post('http://localhost:3001/api/items', { name, description, username });
       setItems([...items, response.data]);
       setName('');
       setDescription('');
@@ -57,12 +61,12 @@ const Dashboard = () => {
     }
   };
 
-  if (!data.token) {
+  if (!datauser.token) {
     return <Navigate to="/login" replace />;
   }
   return (
     <>
-      <h1>Dashboard: {data.username}</h1>
+      <h1>Dashboard: {datauser.username}</h1>
       <div>
         <h1>CRUD Application</h1>
         <input
@@ -79,7 +83,7 @@ const Dashboard = () => {
         />
         <button onClick={addItem}>Add Item</button>
 
-        <table>
+        <Table striped bordered hover>
           <thead>
             <tr>
               <th>ID</th>
@@ -91,7 +95,7 @@ const Dashboard = () => {
           <tbody>
             {items.map((item) => (
               <tr key={item._id}>
-                <td>{item._id}</td>
+                <td>{item.username}</td>
                 <td>{item.name}</td>
                 <td>{item.description}</td>
                 <td>
@@ -101,7 +105,7 @@ const Dashboard = () => {
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
       </div>
     </>
   )
